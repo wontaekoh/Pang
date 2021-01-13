@@ -1,7 +1,7 @@
 import os
 import pygame
 
-# Initialize pygame
+# Initializing pygame
 pygame.init()
 
 # Screen size
@@ -17,6 +17,7 @@ clock = pygame.time.Clock()
 
 # Get current file directory path
 current_path = os.path.dirname(__file__)
+
 # Join current path and images folder path
 image_path = os.path.join(current_path, "images")
 
@@ -39,13 +40,14 @@ character_y_pos = screen_height - character_height - stage_height
 # Character movement
 to_x_LEFT = 0
 to_x_RIGHT = 0
-character_speed = 0.3
+character_speed = 0.25
 
 # Creating weapon
 weapon = pygame.image.load(os.path.join(image_path, "weapon.png"))
 weapon_size = weapon.get_rect().size
 weapon_width = weapon_size[0]
 weapon_speed = 10
+
 # Multiple weapons
 weapons = []
 
@@ -57,7 +59,7 @@ ball_images = [
     pygame.image.load(os.path.join(image_path, "balloon4.png")),
     pygame.image.load(os.path.join(image_path, "balloon5.png"))]
 
-# Balloon speeds
+# Balloon speed
 ball_speed_y = [-18, -15, -13, -11, -9]
 
 # Balloon initiation
@@ -68,7 +70,7 @@ balls.append({
     "img_index": 0,  # biggest ball
     "to_x": 3,  # x axis movement to right
     "to_y": -6,  # y axis movement to up
-    "init_speed_y": ball_speed_y[0]  # balloon init bound speed
+    "init_speed_y": ball_speed_y[0]  # balloon init bouncing speed
 })
 
 # Remove balls and weapon variables
@@ -85,7 +87,7 @@ game_result = "Game Over"
 start_ticks = pygame.time.get_ticks()
 
 # Total time
-total_time = 50
+total_time = 100
 
 
 # Event loop
@@ -126,7 +128,7 @@ while running:
     elif character_x_pos > (screen_width - character_width):
         character_x_pos = (screen_width - character_width)
 
-    # Weapon movement to upward
+    # Weapon movement upward
     # w[0]: x_pos, w[1]: y_pos | only y_pos changes
     weapons = [[w[0], (w[1] - weapon_speed)] for w in weapons]
     # Removing weapon reached to the top
@@ -150,7 +152,8 @@ while running:
         if ball_pos_y >= screen_height - stage_height - ball_height:
             ball_value["to_y"] = ball_value["init_speed_y"]
         else:
-            ball_value["to_y"] += 0.5  # gravity effect -> parabola movement
+            # gravity effect -> parabola movement
+            ball_value["to_y"] += 0.5
 
         ball_value["pos_x"] += ball_value["to_x"]
         ball_value["pos_y"] += ball_value["to_y"]
@@ -177,7 +180,7 @@ while running:
             running = False
             break
 
-        # Collision check for weapons and balls
+        # Collision check (weapons and balls)
         for weapon_index, weapon_value in enumerate(weapons):
             weapon_pos_x = weapon_value[0]
             weapon_pos_y = weapon_value[1]
@@ -192,7 +195,7 @@ while running:
                 weapon_remove = weapon_index
                 ball_remove = ball_index
 
-                # If not the smallest ball, divide the collided ball
+                # If not the smallest ball, divide collided balls
                 if ball_img_idx < 4:
                     # Current ball info
                     ball_width = ball_rect.size[0]
@@ -272,6 +275,7 @@ while running:
 
     # Updating display
     pygame.display.update()
+
 
 # Terminate message
 msg = game_font.render(game_result, True, (255, 255, 0))
